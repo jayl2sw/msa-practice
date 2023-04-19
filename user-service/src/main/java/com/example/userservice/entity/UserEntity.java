@@ -1,9 +1,10 @@
 package com.example.userservice.entity;
 
-import com.example.userservice.dto.SignupDto;
+import com.example.userservice.dto.SignupCommand;
 import com.example.userservice.dto.UserResponseDto;
 import com.example.userservice.util.Encryptor;
 import lombok.*;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 
@@ -31,11 +32,11 @@ public class UserEntity {
     @Column(nullable = false, unique = true)
     private String userId;
 
-    public static UserEntity from(SignupDto signupDto) {
+    public static UserEntity from(SignupCommand signupCommand) {
         return UserEntity.builder()
-                .email(signupDto.getEmail())
-                .name(signupDto.getEmail())
-                .encryptedPassword(Encryptor.encryptPassword(signupDto.getPassword()))
+                .email(signupCommand.getEmail())
+                .name(signupCommand.getName())
+                .encryptedPassword(Encryptor.encryptPassword(signupCommand.getPassword()))
                 .build();
     }
 
