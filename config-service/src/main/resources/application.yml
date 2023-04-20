@@ -1,0 +1,35 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-service
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+
+#  profiles:
+#    name: native
+  cloud:
+    config:
+      server:
+#        native:
+#          search-locations: file://${user.home}/native-file-repo
+        git:
+          # file
+          uri: file:///Users/Jay Lee/git-local-repo
+
+          # github
+#          uri: https://github.com/~~
+          # public doesn't need username & password
+#          username: username
+#          password: password
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, busrefresh
+
