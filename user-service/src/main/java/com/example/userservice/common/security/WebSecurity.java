@@ -1,5 +1,6 @@
-package com.example.userservice.security;
+package com.example.userservice.common.security;
 
+import com.example.userservice.common.jwt.TokenProvider;
 import com.example.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -16,13 +17,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @RequiredArgsConstructor
 public class WebSecurity extends WebSecurityConfigurerAdapter {
     private final UserService userService;
+    private final TokenProvider tokenProvider;
     private final Environment env;
 
-    public WebSecurity(boolean disableDefaults, UserService userService, Environment env) {
-        super(disableDefaults);
-        this.userService = userService;
-        this.env = env;
-    }
+//    public WebSecurity(UserService userService, TokenProvider tokenProvider, Environment env) {
+//        this.userService = userService;
+//        this.tokenProvider = tokenProvider;
+//        this.env = env;
+//    }
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
@@ -42,7 +44,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     private AuthenticationFilter getAuthenticationFilter() throws Exception {
         AuthenticationFilter authenticationFilter =
-                new AuthenticationFilter(authenticationManager(), userService, env);
+                new AuthenticationFilter(authenticationManager(), userService, tokenProvider, env);
         authenticationFilter.setAuthenticationManager(authenticationManager());
 
         return authenticationFilter;

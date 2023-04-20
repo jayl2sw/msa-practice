@@ -1,4 +1,4 @@
-package com.example.userservice.exceptions;
+package com.example.userservice.common.exceptions.user;
 
 public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException() {

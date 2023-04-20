@@ -20,7 +20,4 @@ public class LoginCommand {
     @Size(min=8, message="Password must be equals or more than 8 characters")
     private String password;
 
-    public static LoginCommand from(ServletInputStream inputStream) {
-        return null;
-    }
 }

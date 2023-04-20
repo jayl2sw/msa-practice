@@ -1,4 +1,4 @@
-package com.example.userservice.util;
+package com.example.userservice.common.util;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;

@@ -2,9 +2,8 @@ package com.example.userservice.entity;
 
 import com.example.userservice.dto.SignupCommand;
 import com.example.userservice.dto.UserResponseDto;
-import com.example.userservice.util.Encryptor;
+import com.example.userservice.common.util.Encryptor;
 import lombok.*;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 
@@ -32,6 +31,9 @@ public class UserEntity {
     @Column(nullable = false, unique = true)
     private String userId;
 
+    @Column(name="token")
+    private String token;
+
     public static UserEntity from(SignupCommand signupCommand) {
         return UserEntity.builder()
                 .email(signupCommand.getEmail())
@@ -45,5 +47,9 @@ public class UserEntity {
                 .email(this.email)
                 .name(this.name)
                 .userId(this.userId).build();
+    }
+
+    public void saveToken(String token) {
+        this.token = token;
     }
 }

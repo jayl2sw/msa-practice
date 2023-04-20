@@ -27,5 +27,6 @@ greeting:
   message: Welcome to the Simple E-Commerce
 
 token:
-  expiration_time: 86400000
-  secret: user_token
+  access_expiration_time: 86400000
+  refresh_expiration_time: 3600000
+  secret: 6rmA672A6rCc64+E6rmA672A6rCc66CI6rmA672A6rCc66+46rmA672A6rCc7YyM6rmA672A6rCc7IaU6rmA672A6rCc65286rmA672A6rCc7Iuc6rmA672A6rCc64+E

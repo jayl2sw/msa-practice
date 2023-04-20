@@ -1,10 +1,15 @@
-package com.example.userservice.security;
+package com.example.userservice.common.security;
 
+import antlr.Token;
+import com.example.userservice.common.jwt.TokenProvider;
 import com.example.userservice.dto.LoginCommand;
+import com.example.userservice.entity.TokenDto;
 import com.example.userservice.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.Filter;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,13 +27,18 @@ import java.util.ArrayList;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    public AuthenticationFilter(AuthenticationManager authenticationManager, UserService userService, Environment env) {
+    public AuthenticationFilter(AuthenticationManager authenticationManager,
+                                UserService userService,
+                                TokenProvider tokenProvider,
+                                Environment env) {
         super(authenticationManager);
         this.userService = userService;
+        this.tokenProvider = tokenProvider;
         this.env = env;
     }
 
     private final UserService userService;
+    private final TokenProvider tokenProvider;
     private final Environment env;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -55,13 +65,11 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request,
                                             HttpServletResponse response,
                                             FilterChain chain,
-                                            Authentication authResult) throws IOException, ServletException {
-        String username = ((User) authResult.getPrincipal()).getUsername();
-        userService.getUserDetailsByEmail(username);
+                                            Authentication authResult){
+        TokenDto tokenDto = tokenProvider.generateTokenDto(authResult);
 
-
-
-
+        response.setHeader("auth", tokenDto.getAccessToken());
+        response.setHeader("refresh", tokenDto.getRefreshToken());
 
     }
 }
