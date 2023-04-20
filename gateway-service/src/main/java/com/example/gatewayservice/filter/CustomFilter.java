@@ -17,11 +17,11 @@
 //
 //    @Override
 //    public GatewayFilter apply(CustomFilter.Config config) {
-//        // Custom Pre Filter
+//
 //        return  (exchange, chain) -> {
 //            ServerHttpRequest request = exchange.getRequest();
 //            ServerHttpResponse response = exchange.getResponse();
-////
+//
 //            log.info("Custom PRE filter: request id -> {}", request.getId());
 //
 //            return chain.filter(exchange).then(Mono.fromRunnable(() -> {
