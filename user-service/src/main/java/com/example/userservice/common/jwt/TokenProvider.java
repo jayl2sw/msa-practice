@@ -8,6 +8,7 @@ import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,20 +25,22 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 public class TokenProvider  implements InitializingBean {
+    private final Environment env;
+    private long ACCESS_TOKEN_EXPIRE_TIME;
+    private long REFRESH_TOKEN_EXPIRE_TIME;
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BERAER_TYPE = "bearer";
-    @Value("${token.access_expiration_time}")
-    private long ACCESS_TOKEN_EXPIRE_TIME;
-    @Value("${token.refresh_expiration_time}")
-    private long REFRESH_TOKEN_EXPIRE_TIME;
 
     private String secret;
     private Key key;
 
     public TokenProvider(
-            @Value("${token.secret}") String secret
+            Environment env
     ){
-        this.secret = secret;
+        this.env = env;
+        this.secret = env.getProperty("token.secret");
+        this.ACCESS_TOKEN_EXPIRE_TIME = Long.parseLong(env.getProperty("token.refresh_expiration_time"));
+        this.REFRESH_TOKEN_EXPIRE_TIME = Long.parseLong(env.getProperty("token.refresh_expiration_time"));
     }
 
     @Override
