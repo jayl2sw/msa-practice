@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @Builder
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserResponseDto {
     private String email;
     private String name;

@@ -1,6 +1,7 @@
-package com.example.userservice.common.security;
+package com.example.userservice.common.config;
 
 import com.example.userservice.common.jwt.TokenProvider;
+import com.example.userservice.common.filter.security.AuthenticationFilter;
 import com.example.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

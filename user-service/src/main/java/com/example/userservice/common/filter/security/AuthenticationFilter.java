@@ -1,4 +1,4 @@
-package com.example.userservice.common.security;
+package com.example.userservice.common.filter.security;
 
 import antlr.Token;
 import com.example.userservice.common.jwt.TokenProvider;

@@ -1,17 +1,18 @@
 package com.example.userservice.service;
 
 import com.example.userservice.client.OrderServiceClient;
+import com.example.userservice.common.exceptions.user.UserNotFoundException;
+import com.example.userservice.common.jwt.TokenProvider;
 import com.example.userservice.dto.*;
 import com.example.userservice.entity.TokenDto;
 import com.example.userservice.entity.UserEntity;
-import com.example.userservice.common.exceptions.user.UserNotFoundException;
-import com.example.userservice.common.jwt.TokenProvider;
 import com.example.userservice.repository.UserRepository;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.ParameterizedTypeReference;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -21,7 +22,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -30,6 +30,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -40,6 +41,7 @@ public class UserService implements UserDetailsService {
 //    private final RestTemplate restTemplate;
     private final Environment env;
     private final OrderServiceClient orderServiceClient;
+    private final CircuitBreakerFactory circuitBreakerFactory;
 
     public UserResponseDto createUser(SignupCommand signupCommand){
         UserEntity userEntity = UserEntity.from(signupCommand);
@@ -62,8 +64,22 @@ public class UserService implements UserDetailsService {
 //        List<OrderResponseDto> orderLists = orderListResponse.getBody();
 
         /* Using a feign client*/
+//        try {
+//            List<OrderResponseDto> orderLists = orderServiceClient.getOrdersByUserId(userId);
+//            userResponseDto.setOrders(orderLists);
+//        } catch (FeignException e) {
+//            log.error("FeignException :", e.getMessage());
+//        }
 
-        List<OrderResponseDto> orderLists = orderServiceClient.getOrdersByUserId(userId);
+        /* Using ErrorDecoder */
+//        List<OrderResponseDto> orderLists = orderServiceClient.getOrdersByUserId(userId);
+
+
+        /* Using CircuitBreaker */
+        CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
+        List<OrderResponseDto> orderLists = circuitBreaker.run(() -> orderServiceClient.getOrdersByUserId(userId),
+                throwable -> new ArrayList<>());
+
         userResponseDto.setOrders(orderLists);
 
         return userResponseDto;

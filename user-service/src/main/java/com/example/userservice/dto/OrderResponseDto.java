@@ -10,7 +10,7 @@ public class OrderResponseDto {
     private Integer quantity;
     private Integer unitPrice;
     private Integer totalPrice;
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 
     private String orderId;
 
