@@ -1,5 +1,6 @@
 package com.example.userservice.service;
 
+import com.example.userservice.client.OrderServiceClient;
 import com.example.userservice.dto.*;
 import com.example.userservice.entity.TokenDto;
 import com.example.userservice.entity.UserEntity;
@@ -36,8 +37,9 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
-    private final RestTemplate restTemplate;
+//    private final RestTemplate restTemplate;
     private final Environment env;
+    private final OrderServiceClient orderServiceClient;
 
     public UserResponseDto createUser(SignupCommand signupCommand){
         UserEntity userEntity = UserEntity.from(signupCommand);
@@ -51,14 +53,17 @@ public class UserService implements UserDetailsService {
 
         UserResponseDto userResponseDto = userEntity.toResponseDto();
 
-        /* Using as rest template*/
-        String orderUrl = String.format(env.getProperty("order_service.url"), userId);
-        ResponseEntity<List<OrderResponseDto>> orderListResponse =
-                restTemplate.exchange(orderUrl, HttpMethod.GET, null,
-                                                new ParameterizedTypeReference<List<OrderResponseDto>>() {
-                });
+        /* Using a rest template*/
+//        String orderUrl = String.format(env.getProperty("order_service.url"), userId);
+//        ResponseEntity<List<OrderResponseDto>> orderListResponse =
+//                restTemplate.exchange(orderUrl, HttpMethod.GET, null,
+//                                                new ParameterizedTypeReference<List<OrderResponseDto>>() {
+//                });
+//        List<OrderResponseDto> orderLists = orderListResponse.getBody();
 
-        List<OrderResponseDto> orderLists = orderListResponse.getBody();
+        /* Using a feign client*/
+
+        List<OrderResponseDto> orderLists = orderServiceClient.getOrdersByUserId(userId);
         userResponseDto.setOrders(orderLists);
 
         return userResponseDto;
