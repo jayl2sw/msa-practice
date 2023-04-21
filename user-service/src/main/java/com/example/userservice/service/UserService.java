@@ -7,6 +7,10 @@ import com.example.userservice.common.exceptions.user.UserNotFoundException;
 import com.example.userservice.common.jwt.TokenProvider;
 import com.example.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -16,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -31,6 +36,9 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final RestTemplate restTemplate;
+    private final Environment env;
+
     public UserResponseDto createUser(SignupCommand signupCommand){
         UserEntity userEntity = UserEntity.from(signupCommand);
         userEntity.setUserId(UUID.randomUUID().toString());
@@ -43,7 +51,14 @@ public class UserService implements UserDetailsService {
 
         UserResponseDto userResponseDto = userEntity.toResponseDto();
 
-        List<OrderResponseDto> orderLists = new ArrayList<>();
+        /* Using as rest template*/
+        String orderUrl = String.format(env.getProperty("order_service.url"), userId);
+        ResponseEntity<List<OrderResponseDto>> orderListResponse =
+                restTemplate.exchange(orderUrl, HttpMethod.GET, null,
+                                                new ParameterizedTypeReference<List<OrderResponseDto>>() {
+                });
+
+        List<OrderResponseDto> orderLists = orderListResponse.getBody();
         userResponseDto.setOrders(orderLists);
 
         return userResponseDto;

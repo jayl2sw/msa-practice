@@ -12,6 +12,6 @@ public class OrderResponseDto {
     private Integer totalPrice;
     private LocalDateTime createAt;
 
-    private String orderdId;
+    private String orderId;
 
 }
