@@ -1,20 +1,24 @@
-# MSA
+# msa-practice
 
-Spring Boot 실행
+## Versions
 
-```sh 
-mvn spring-boot:run -Dserver.port=9003'
-./gradlew bootRun --args='--server.port=9003'
-```
+java: openjdk-11
+
+spring-boot: 2.7.10
+
+spring-cloud: 2021.0.6
+
+erlang: 25.1
+
+rabbitmq: 3.11.13
+
+zipkin: 2.24.0
+
+spring-clout-starter-zipkin: 2.2.8.RELEASE
 
 
-
-컴파일
-
-```sh
-mvn clean
-./gradlew clean 
-mvn compile package
-./gradlew build
-```
-
+## Ports
+Eureka: 8671
+Gateway: 8000
+Config: 8888
+Zipkin: 9411
