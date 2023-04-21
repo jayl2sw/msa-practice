@@ -15,4 +15,5 @@ public class OrderResponseDto {
 
     private String userId;
     private String orderId;
+    private LocalDateTime createdAt;
 }
