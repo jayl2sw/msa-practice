@@ -5,7 +5,7 @@ spring:
   application:
     name: user-service
   zipkin:
-    base-url: http://localhost:9411
+    base-url: http://zippyziggy.shop:9411
     enabled: true
   sleuth:
     sampler:
@@ -31,7 +31,7 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://127.0.0.1:8761/eureka
+      defaultZone: http://localhost:8761/eureka
 
 
 greeting:
@@ -46,7 +46,8 @@ management:
 logging:
   level:
     com.example.userservice.client: DEBUG
-#token:
-#  access_expiration_time: 86400000
-#  refresh_expiration_time: 3600000
-#  secret: 6rmA672A6rCc64+E6rmA672A6rCc66CI6rmA672A6rCc66+46rmA672A6rCc7YyM6rmA672A6rCc7IaU6rmA672A6rCc65286rmA672A6rCc7Iuc6rmA672A6rCc64+E
+
+springdoc:
+  swagger-ui:
+    path: /doc/swagger
+    operations-sorter: method

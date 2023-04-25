@@ -40,6 +40,14 @@ spring:
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
+            - Path=/user-service/v3/**
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
             - Path=/user-service/actuator/**
             - Method=GET, POST
           filters:
@@ -59,12 +67,47 @@ spring:
         - id: catalog-service
           uri: lb://CATALOG-SERVICE
           predicates:
+            - Path=/catalog-service/v3/**
+          filters:
+            - RewritePath=/catalog-service/(?<segment>.*), /$\{segment}
+
+        - id: catalog-service
+          uri: lb://CATALOG-SERVICE
+          predicates:
             - Path=/catalog-service/**
+          filters:
+            - RewritePath=/catalog-service/(?<segment>.*), /$\{segment}
+
+        - id: order-service
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/order-service/v3/**
+          filters:
+            - RewritePath=/order-service/(?<segment>.*), /$\{segment}
 
         - id: order-service
           uri: lb://ORDER-SERVICE
           predicates:
             - Path=/order-service/**
+
+        - id: openapi
+          uri: http://localhost:${server.port}
+          predicates:
+            - Path=/v3/api-docs/**
+          filters:
+            - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
+
+springdoc:
+  swagger-ui:
+    urls[0]:
+      name: user-service
+      url: http://localhost:${server.port}/v3/api-docs/user-service
+    urls[1]:
+      name: catalog-service
+      url: http://localhost:${server.port}/v3/api-docs/catalog-service
+    urls[2]:
+      name: order-service
+      url: http://localhost:${server.port}/v3/api-docs/order-service
 
 management:
   endpoints:
